@@ -1,4 +1,3 @@
-
 pub fn depth_increase_count(data: &Vec<i32>) -> u32 {
     let mut count = 0;
 

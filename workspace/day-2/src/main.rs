@@ -1,6 +1,6 @@
+use crate::input_parsing::parse_file;
 use std::env;
 use std::process::exit;
-use crate::input_parsing::parse_file;
 
 mod input_parsing;
 mod models;
@@ -14,7 +14,7 @@ fn main() {
         eprintln!("Invalid arguments count");
         exit(1);
     }
-    let input  = parse_file(args[1].clone());
+    let input = parse_file(args[1].clone());
 
     println!("part 1: {}", part_1::apply_commands(&input));
     println!("part 2: {}", part_2::apply_commands(&input));

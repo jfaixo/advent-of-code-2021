@@ -1,4 +1,4 @@
-use crate::models::TransparentSheet;
+use crate::models::Polymerization;
 use std::error::Error;
 use std::process::exit;
 use std::{env, fs};
@@ -14,10 +14,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     let file_content =
         fs::read_to_string(args[1].clone()).expect("Error while reading the data file");
-    let input = TransparentSheet::parse_string(file_content)?;
+    let input = Polymerization::parse_string(file_content)?;
 
-    println!("part 1: {}", input.count_fold_once());
-    input.fold_and_print();
+    println!("part 1: {}", input.polymerize(10));
+    println!("part 2: {}", input.polymerize(40));
 
     Ok(())
 }

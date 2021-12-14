@@ -24,26 +24,27 @@ impl TransparentSheet {
         let mut transparent_sheet = TransparentSheet::default();
 
         let mut folding_parsing = false;
-        for line in content.lines()  {
+        for line in content.lines() {
             if !folding_parsing {
                 if line.is_empty() {
                     folding_parsing = true;
-                }
-                else {
-                    let parts = line.split(',')
+                } else {
+                    let parts = line
+                        .split(',')
                         .map(|n| n.parse::<i32>())
                         .collect::<Result<Vec<_>, _>>()?;
-                    transparent_sheet.points.insert(Point { x: parts[0], y: parts[1] });
+                    transparent_sheet.points.insert(Point {
+                        x: parts[0],
+                        y: parts[1],
+                    });
                 }
-            }
-            else {
+            } else {
                 let parts = line[11..].split('=').collect::<Vec<_>>();
                 let value = parts[1].parse::<i32>()?;
 
                 if parts[0] == "x" {
                     transparent_sheet.foldings.push_back(Folding::Left(value));
-                }
-                else {
+                } else {
                     transparent_sheet.foldings.push_back(Folding::Up(value));
                 }
             }
@@ -60,7 +61,7 @@ impl TransparentSheet {
         sheet.points.len()
     }
 
-    fn fold(&mut self) -> Result<(), Box<dyn Error>>{
+    fn fold(&mut self) -> Result<(), Box<dyn Error>> {
         let fold = self.foldings.pop_front();
 
         let mut updated_points = HashSet::new();
@@ -68,9 +69,11 @@ impl TransparentSheet {
             Some(Folding::Up(value)) => {
                 for point in &self.points {
                     if point.y > value {
-                        updated_points.insert(Point { x: point.x, y: value * 2 - point.y });
-                    }
-                    else {
+                        updated_points.insert(Point {
+                            x: point.x,
+                            y: value * 2 - point.y,
+                        });
+                    } else {
                         updated_points.insert(*point);
                     }
                 }
@@ -79,7 +82,10 @@ impl TransparentSheet {
             Some(Folding::Left(value)) => {
                 for point in &self.points {
                     if point.x > value {
-                        updated_points.insert(Point { x: value * 2 - point.x, y: point.y });
+                        updated_points.insert(Point {
+                            x: value * 2 - point.x,
+                            y: point.y,
+                        });
                     } else {
                         updated_points.insert(*point);
                     }
@@ -125,11 +131,10 @@ impl TransparentSheet {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-    use std::collections::{HashSet, VecDeque};
     use crate::models::{Folding, Point, TransparentSheet};
+    use std::collections::{HashSet, VecDeque};
 
     #[test]
     fn parse_example_case() {
@@ -154,36 +159,37 @@ mod tests {
 
 fold along y=7
 fold along x=5
-".to_string();
+"
+        .to_string();
 
         let input = TransparentSheet::parse_string(content).unwrap();
 
-        assert_eq!(input, TransparentSheet {
-            points: HashSet::<_>::from_iter([
-                Point { x: 6, y: 10 },
-                Point { x: 0, y: 14 },
-                Point { x: 9, y: 10 },
-                Point { x: 0, y: 3 },
-                Point { x: 10, y: 4 },
-                Point { x: 4, y: 11 },
-                Point { x: 6, y: 0 },
-                Point { x: 6, y: 12 },
-                Point { x: 4, y: 1 },
-                Point { x: 0, y: 13 },
-                Point { x: 10, y: 12 },
-                Point { x: 3, y: 4 },
-                Point { x: 3, y: 0 },
-                Point { x: 8, y: 4 },
-                Point { x: 1, y: 10 },
-                Point { x: 2, y: 14 },
-                Point { x: 8, y: 10 },
-                Point { x: 9, y: 0 },
-            ]),
-            foldings: VecDeque::from_iter([
-                Folding::Up(7),
-                Folding::Left(5)
-            ])
-        });
+        assert_eq!(
+            input,
+            TransparentSheet {
+                points: HashSet::<_>::from_iter([
+                    Point { x: 6, y: 10 },
+                    Point { x: 0, y: 14 },
+                    Point { x: 9, y: 10 },
+                    Point { x: 0, y: 3 },
+                    Point { x: 10, y: 4 },
+                    Point { x: 4, y: 11 },
+                    Point { x: 6, y: 0 },
+                    Point { x: 6, y: 12 },
+                    Point { x: 4, y: 1 },
+                    Point { x: 0, y: 13 },
+                    Point { x: 10, y: 12 },
+                    Point { x: 3, y: 4 },
+                    Point { x: 3, y: 0 },
+                    Point { x: 8, y: 4 },
+                    Point { x: 1, y: 10 },
+                    Point { x: 2, y: 14 },
+                    Point { x: 8, y: 10 },
+                    Point { x: 9, y: 0 },
+                ]),
+                foldings: VecDeque::from_iter([Folding::Up(7), Folding::Left(5)])
+            }
+        );
     }
 
     #[test]
@@ -209,10 +215,7 @@ fold along x=5
                 Point { x: 8, y: 10 },
                 Point { x: 9, y: 0 },
             ]),
-            foldings: VecDeque::from_iter([
-                Folding::Up(7),
-                Folding::Left(5)
-            ])
+            foldings: VecDeque::from_iter([Folding::Up(7), Folding::Left(5)]),
         };
 
         assert_eq!(input.count_fold_once(), 17);

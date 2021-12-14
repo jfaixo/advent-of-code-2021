@@ -33,7 +33,7 @@ impl Symbol {
             '}' => Symbol::CurlyBracketClose,
             '<' => Symbol::AngleBracketOpen,
             '>' => Symbol::AngleBracketClose,
-            _ => panic!("Invalid character found")
+            _ => panic!("Invalid character found"),
         }
     }
 
@@ -43,7 +43,7 @@ impl Symbol {
             Symbol::SquareBracketClose => Symbol::SquareBracketOpen,
             Symbol::CurlyBracketClose => Symbol::CurlyBracketOpen,
             Symbol::AngleBracketClose => Symbol::AngleBracketOpen,
-            _ => panic!("Tried to match an opening symbol")
+            _ => panic!("Tried to match an opening symbol"),
         }
     }
 }
@@ -54,27 +54,28 @@ impl ParsedLine {
 
         for (index, c) in line.chars().enumerate() {
             match Symbol::from_char(c) {
-                symbol if symbol == Symbol::RoundBracketOpen || symbol == Symbol::SquareBracketOpen ||
-                    symbol == Symbol::CurlyBracketOpen || symbol == Symbol::AngleBracketOpen => {
+                symbol
+                    if symbol == Symbol::RoundBracketOpen
+                        || symbol == Symbol::SquareBracketOpen
+                        || symbol == Symbol::CurlyBracketOpen
+                        || symbol == Symbol::AngleBracketOpen =>
+                {
                     symbols_queue.push(symbol);
                 }
-                symbol => {
-                    match symbols_queue.pop() {
-                        None => { return ParsedLine::Corrupted(symbol) }
-                        Some(previous_symbol) => {
-                            if previous_symbol != symbol.opening_symbol() {
-                                return ParsedLine::Corrupted(symbol)
-                            }
+                symbol => match symbols_queue.pop() {
+                    None => return ParsedLine::Corrupted(symbol),
+                    Some(previous_symbol) => {
+                        if previous_symbol != symbol.opening_symbol() {
+                            return ParsedLine::Corrupted(symbol);
                         }
                     }
-                }
+                },
             }
         }
 
         if symbols_queue.len() > 0 {
             ParsedLine::Incomplete(symbols_queue)
-        }
-        else {
+        } else {
             ParsedLine::Valid
         }
     }
@@ -87,9 +88,21 @@ mod tests {
     #[test]
     fn corrupted_chunks() {
         // Corrupted examples
-        assert_eq!(ParsedLine::from_str("(]"), ParsedLine::Corrupted(Symbol::SquareBracketClose));
-        assert_eq!(ParsedLine::from_str("{()()()>"), ParsedLine::Corrupted(Symbol::AngleBracketClose));
-        assert_eq!(ParsedLine::from_str("(((()))}"), ParsedLine::Corrupted(Symbol::CurlyBracketClose));
-        assert_eq!(ParsedLine::from_str("<([]){()}[{}])"), ParsedLine::Corrupted(Symbol::RoundBracketClose));
+        assert_eq!(
+            ParsedLine::from_str("(]"),
+            ParsedLine::Corrupted(Symbol::SquareBracketClose)
+        );
+        assert_eq!(
+            ParsedLine::from_str("{()()()>"),
+            ParsedLine::Corrupted(Symbol::AngleBracketClose)
+        );
+        assert_eq!(
+            ParsedLine::from_str("(((()))}"),
+            ParsedLine::Corrupted(Symbol::CurlyBracketClose)
+        );
+        assert_eq!(
+            ParsedLine::from_str("<([]){()}[{}])"),
+            ParsedLine::Corrupted(Symbol::RoundBracketClose)
+        );
     }
 }

@@ -11,8 +11,8 @@ pub fn apply_commands(input: &Input) -> i32 {
                 current_x += value;
                 current_y += aim * value
             }
-            SubmarineCommand::Down(value) => { aim += value }
-            SubmarineCommand::Up(value) => { aim -= value }
+            SubmarineCommand::Down(value) => aim += value,
+            SubmarineCommand::Up(value) => aim -= value,
         }
     }
 
@@ -21,21 +21,14 @@ pub fn apply_commands(input: &Input) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use crate::models::{Input};
+    use crate::models::Input;
     use crate::models::SubmarineCommand::{Down, Forward, Up};
     use crate::part_2::apply_commands;
 
     #[test]
     fn part_2_example_case() {
         let input = Input {
-            commands: vec![
-                Forward(5),
-                Down(5),
-                Forward(8),
-                Up(3),
-                Down(8),
-                Forward(2),
-            ]
+            commands: vec![Forward(5), Down(5), Forward(8), Up(3), Down(8), Forward(2)],
         };
 
         assert_eq!(900, apply_commands(&input));

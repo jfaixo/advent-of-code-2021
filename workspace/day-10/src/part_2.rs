@@ -14,7 +14,7 @@ pub fn autocomplete_score(input: &Input) -> u64 {
                         Symbol::SquareBracketOpen => score += 2,
                         Symbol::CurlyBracketOpen => score += 3,
                         Symbol::AngleBracketOpen => score += 4,
-                        _ => panic!("Invalid opening symbol")
+                        _ => panic!("Invalid opening symbol"),
                     }
                 }
                 scores.push(score);

@@ -1,8 +1,7 @@
-
 #[derive(Debug, Eq, PartialEq)]
 pub struct Input {
     pub draw_numbers: Vec<u8>,
-    pub boards: Vec<Board>
+    pub boards: Vec<Board>,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -17,7 +16,7 @@ impl Board {
         Board {
             numbers,
             board_state: [false; 25],
-            is_won: false
+            is_won: false,
         }
     }
 
@@ -33,8 +32,16 @@ impl Board {
                 let row = (index - col) / 5;
 
                 // Winning Row || Winning Col ?
-                self.is_won |= (self.board_state[row * 5 + 0] && self.board_state[row * 5 + 1] && self.board_state[row * 5 + 2] && self.board_state[row * 5 + 3] && self.board_state[row * 5 + 4]) ||
-                    (self.board_state[5 * 0 + col] && self.board_state[5 * 1 + col] && self.board_state[5 * 2 + col] && self.board_state[5 * 3 + col] && self.board_state[5 * 4 + col]);
+                self.is_won |= (self.board_state[row * 5 + 0]
+                    && self.board_state[row * 5 + 1]
+                    && self.board_state[row * 5 + 2]
+                    && self.board_state[row * 5 + 3]
+                    && self.board_state[row * 5 + 4])
+                    || (self.board_state[5 * 0 + col]
+                        && self.board_state[5 * 1 + col]
+                        && self.board_state[5 * 2 + col]
+                        && self.board_state[5 * 3 + col]
+                        && self.board_state[5 * 4 + col]);
                 return self.is_won;
             }
         }

@@ -1,7 +1,6 @@
 use crate::models::Input;
 
 pub fn diagnostic_report(input: &Input) -> u32 {
-
     let mut set_count = vec![0; input.bit_count];
     for n in input.data.iter() {
         for bit_position in 0..input.bit_count {
@@ -27,7 +26,7 @@ pub fn diagnostic_report(input: &Input) -> u32 {
 
 #[cfg(test)]
 mod tests {
-    use crate::models::{Input};
+    use crate::models::Input;
     use crate::part_1::diagnostic_report;
 
     #[test]
@@ -35,19 +34,9 @@ mod tests {
         let input = Input {
             bit_count: 5,
             data: vec![
-                0b00100,
-                0b11110,
-                0b10110,
-                0b10111,
-                0b10101,
-                0b01111,
-                0b00111,
-                0b11100,
-                0b10000,
-                0b11001,
-                0b00010,
-                0b01010,
-            ]
+                0b00100, 0b11110, 0b10110, 0b10111, 0b10101, 0b01111, 0b00111, 0b11100, 0b10000,
+                0b11001, 0b00010, 0b01010,
+            ],
         };
 
         assert_eq!(198, diagnostic_report(&input));

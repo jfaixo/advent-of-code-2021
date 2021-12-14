@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Input {
-    pub data: Vec<Entry>
+    pub data: Vec<Entry>,
 }
 
 #[derive(Debug, Eq, PartialEq)]
@@ -49,9 +49,12 @@ impl Entry {
             }
         }
 
-        let segment_b = ('a' as u8 + segment_count.iter().position(|&n| n == 6).unwrap() as u8) as char;
-        let segment_e = ('a' as u8 + segment_count.iter().position(|&n| n == 4).unwrap() as u8) as char;
-        let segment_f = ('a' as u8 + segment_count.iter().position(|&n| n == 9).unwrap() as u8) as char;
+        let segment_b =
+            ('a' as u8 + segment_count.iter().position(|&n| n == 6).unwrap() as u8) as char;
+        let segment_e =
+            ('a' as u8 + segment_count.iter().position(|&n| n == 4).unwrap() as u8) as char;
+        let segment_f =
+            ('a' as u8 + segment_count.iter().position(|&n| n == 9).unwrap() as u8) as char;
 
         // Find segment c
         let mut segment_c = ' ';
@@ -74,35 +77,89 @@ impl Entry {
         // Find segment g
         let mut segment_g = ' ';
         for c in "abcdefg".chars() {
-            if c != segment_a && c != segment_b && c != segment_c && c != segment_d && c != segment_e && c != segment_f {
+            if c != segment_a
+                && c != segment_b
+                && c != segment_c
+                && c != segment_d
+                && c != segment_e
+                && c != segment_f
+            {
                 segment_g = c;
                 break;
             }
         }
 
         // Find missing pattern: 0
-        let pattern_str = [segment_a, segment_b, segment_c, segment_e, segment_f, segment_g].iter().sorted().collect::<String>();
-        self.found_patterns[self.patterns.iter().position(|str| str == pattern_str.as_str()).unwrap()] = 0;
+        let pattern_str = [
+            segment_a, segment_b, segment_c, segment_e, segment_f, segment_g,
+        ]
+        .iter()
+        .sorted()
+        .collect::<String>();
+        self.found_patterns[self
+            .patterns
+            .iter()
+            .position(|str| str == pattern_str.as_str())
+            .unwrap()] = 0;
 
         // Find missing pattern: 2
-        let pattern_str = [segment_a, segment_c, segment_d, segment_e, segment_g].iter().sorted().collect::<String>();
-        self.found_patterns[self.patterns.iter().position(|str| str == pattern_str.as_str()).unwrap()] = 2;
+        let pattern_str = [segment_a, segment_c, segment_d, segment_e, segment_g]
+            .iter()
+            .sorted()
+            .collect::<String>();
+        self.found_patterns[self
+            .patterns
+            .iter()
+            .position(|str| str == pattern_str.as_str())
+            .unwrap()] = 2;
 
         // Find missing pattern: 3
-        let pattern_str = [segment_a, segment_c, segment_d, segment_f, segment_g].iter().sorted().collect::<String>();
-        self.found_patterns[self.patterns.iter().position(|str| str == pattern_str.as_str()).unwrap()] = 3;
+        let pattern_str = [segment_a, segment_c, segment_d, segment_f, segment_g]
+            .iter()
+            .sorted()
+            .collect::<String>();
+        self.found_patterns[self
+            .patterns
+            .iter()
+            .position(|str| str == pattern_str.as_str())
+            .unwrap()] = 3;
 
         // Find missing pattern: 5
-        let pattern_str = [segment_a, segment_b, segment_d, segment_f, segment_g].iter().sorted().collect::<String>();
-        self.found_patterns[self.patterns.iter().position(|str| str == pattern_str.as_str()).unwrap()] = 5;
+        let pattern_str = [segment_a, segment_b, segment_d, segment_f, segment_g]
+            .iter()
+            .sorted()
+            .collect::<String>();
+        self.found_patterns[self
+            .patterns
+            .iter()
+            .position(|str| str == pattern_str.as_str())
+            .unwrap()] = 5;
 
         // Find missing pattern: 6
-        let pattern_str = [segment_a, segment_b, segment_d, segment_e, segment_f, segment_g].iter().sorted().collect::<String>();
-        self.found_patterns[self.patterns.iter().position(|str| str == pattern_str.as_str()).unwrap()] = 6;
+        let pattern_str = [
+            segment_a, segment_b, segment_d, segment_e, segment_f, segment_g,
+        ]
+        .iter()
+        .sorted()
+        .collect::<String>();
+        self.found_patterns[self
+            .patterns
+            .iter()
+            .position(|str| str == pattern_str.as_str())
+            .unwrap()] = 6;
 
         // Find missing pattern: 9
-        let pattern_str = [segment_a, segment_b, segment_c, segment_d, segment_f, segment_g].iter().sorted().collect::<String>();
-        self.found_patterns[self.patterns.iter().position(|str| str == pattern_str.as_str()).unwrap()] = 9;
+        let pattern_str = [
+            segment_a, segment_b, segment_c, segment_d, segment_f, segment_g,
+        ]
+        .iter()
+        .sorted()
+        .collect::<String>();
+        self.found_patterns[self
+            .patterns
+            .iter()
+            .position(|str| str == pattern_str.as_str())
+            .unwrap()] = 9;
 
         for i in 0..10 {
             self.value_to_pattern_index[self.found_patterns[i]] = i;

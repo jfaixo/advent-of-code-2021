@@ -1,4 +1,3 @@
-
 #[derive(Debug, Eq, PartialEq)]
 pub enum SubmarineCommand {
     Forward(i32),
@@ -8,5 +7,5 @@ pub enum SubmarineCommand {
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Input {
-    pub commands: Vec<SubmarineCommand>
+    pub commands: Vec<SubmarineCommand>,
 }

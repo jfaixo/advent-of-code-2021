@@ -1,4 +1,3 @@
-
 #[derive(Debug, Eq, PartialEq)]
 pub struct Input {
     pub map: HeightMap,
@@ -8,7 +7,7 @@ pub struct Input {
 pub struct HeightMap {
     data: Vec<u8>,
     width: usize,
-    height: usize
+    height: usize,
 }
 
 impl HeightMap {
@@ -20,26 +19,31 @@ impl HeightMap {
         HeightMap {
             data,
             width,
-            height
+            height,
         }
     }
 
-    pub fn flow_points(&self) -> Vec<(usize, usize)> {{
-        let mut flow_points = Vec::new();
+    pub fn flow_points(&self) -> Vec<(usize, usize)> {
+        {
+            let mut flow_points = Vec::new();
 
-        for y in 0..self.height {
-            for x in 0..self.width {
-                let value = self.data[y * self.width + x];
+            for y in 0..self.height {
+                for x in 0..self.width {
+                    let value = self.data[y * self.width + x];
 
-                if (x == 0 || self.data[y * self.width + x - 1] > value) && (x + 1 >= self.width || self.data[y * self.width + x + 1] > value) &&
-                    (y == 0 || self.data[(y - 1) * self.width + x] > value) && (y + 1 >= self.height || self.data[(y + 1) * self.width + x] > value) {
-                    flow_points.push((x, y));
+                    if (x == 0 || self.data[y * self.width + x - 1] > value)
+                        && (x + 1 >= self.width || self.data[y * self.width + x + 1] > value)
+                        && (y == 0 || self.data[(y - 1) * self.width + x] > value)
+                        && (y + 1 >= self.height || self.data[(y + 1) * self.width + x] > value)
+                    {
+                        flow_points.push((x, y));
+                    }
                 }
             }
-        }
 
-        flow_points
-    }}
+            flow_points
+        }
+    }
 
     pub fn risk_level(&self) -> usize {
         self.flow_points()
@@ -49,9 +53,10 @@ impl HeightMap {
     }
 
     pub fn find_basins(&self) -> usize {
-        let mut basin_sizes = self.flow_points()
+        let mut basin_sizes = self
+            .flow_points()
             .iter()
-            .map(|(x, y)| { self.basin_size(*x, *y) })
+            .map(|(x, y)| self.basin_size(*x, *y))
             .collect::<Vec<usize>>();
 
         basin_sizes.sort();
@@ -69,8 +74,7 @@ impl HeightMap {
     fn recursive_basin_size(&self, basin_map: &mut Vec<bool>, x: usize, y: usize) -> usize {
         let mut count = 0;
 
-        if self.data[y *self.width + x] < 9
-        {
+        if self.data[y * self.width + x] < 9 {
             basin_map[y * self.width + x] = true;
             count += 1;
 
@@ -100,12 +104,12 @@ mod tests {
     fn count_low_points() {
         let input = Input {
             map: HeightMap::new(vec![
-                vec![2,1,9,9,9,4,3,2,1,0],
-                vec![3,9,8,7,8,9,4,9,2,1],
-                vec![9,8,5,6,7,8,9,8,9,2],
-                vec![8,7,6,7,8,9,6,7,8,9],
-                vec![9,8,9,9,9,6,5,6,7,8],
-            ])
+                vec![2, 1, 9, 9, 9, 4, 3, 2, 1, 0],
+                vec![3, 9, 8, 7, 8, 9, 4, 9, 2, 1],
+                vec![9, 8, 5, 6, 7, 8, 9, 8, 9, 2],
+                vec![8, 7, 6, 7, 8, 9, 6, 7, 8, 9],
+                vec![9, 8, 9, 9, 9, 6, 5, 6, 7, 8],
+            ]),
         };
 
         assert_eq!(15, input.map.risk_level());
@@ -115,12 +119,12 @@ mod tests {
     fn find_basins() {
         let input = Input {
             map: HeightMap::new(vec![
-                vec![2,1,9,9,9,4,3,2,1,0],
-                vec![3,9,8,7,8,9,4,9,2,1],
-                vec![9,8,5,6,7,8,9,8,9,2],
-                vec![8,7,6,7,8,9,6,7,8,9],
-                vec![9,8,9,9,9,6,5,6,7,8],
-            ])
+                vec![2, 1, 9, 9, 9, 4, 3, 2, 1, 0],
+                vec![3, 9, 8, 7, 8, 9, 4, 9, 2, 1],
+                vec![9, 8, 5, 6, 7, 8, 9, 8, 9, 2],
+                vec![8, 7, 6, 7, 8, 9, 6, 7, 8, 9],
+                vec![9, 8, 9, 9, 9, 6, 5, 6, 7, 8],
+            ]),
         };
 
         assert_eq!(1134, input.map.find_basins());

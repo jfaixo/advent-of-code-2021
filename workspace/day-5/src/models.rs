@@ -1,4 +1,3 @@
-
 #[derive(Debug, Eq, PartialEq)]
 pub struct Input {
     pub lines: Vec<Line>,
@@ -23,5 +22,5 @@ impl Line {
 #[derive(Debug, Eq, PartialEq, Hash)]
 pub struct Point {
     pub x: i32,
-    pub y: i32
+    pub y: i32,
 }

@@ -22,7 +22,7 @@ mod tests {
     #[test]
     fn part_1_example_case() {
         let input = Input {
-            fish_per_timer: [0, 1, 1, 2, 1, 0, 0, 0, 0]
+            fish_per_timer: [0, 1, 1, 2, 1, 0, 0, 0, 0],
         };
 
         assert_eq!(5934, simulate_lanternfish_population(&input, 80));
@@ -31,7 +31,7 @@ mod tests {
     #[test]
     fn part_2_example_case() {
         let input = Input {
-            fish_per_timer: [0, 1, 1, 2, 1, 0, 0, 0, 0]
+            fish_per_timer: [0, 1, 1, 2, 1, 0, 0, 0, 0],
         };
 
         assert_eq!(26984457539, simulate_lanternfish_population(&input, 256));

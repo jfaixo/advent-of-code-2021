@@ -1,5 +1,4 @@
-
 #[derive(Debug, PartialEq)]
 pub struct Input {
-    pub data: Vec<i32>
+    pub data: Vec<i32>,
 }

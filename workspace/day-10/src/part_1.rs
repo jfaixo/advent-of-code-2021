@@ -5,15 +5,13 @@ pub fn syntax_error_score(input: &Input) -> u64 {
 
     for line in &input.parsed_lines {
         match line {
-            ParsedLine::Corrupted(symbol) => {
-                match symbol {
-                    Symbol::RoundBracketClose => score += 3,
-                    Symbol::SquareBracketClose => score += 57,
-                    Symbol::CurlyBracketClose => score += 1197,
-                    Symbol::AngleBracketClose => score += 25137,
-                    _ => {}
-                }
-            }
+            ParsedLine::Corrupted(symbol) => match symbol {
+                Symbol::RoundBracketClose => score += 3,
+                Symbol::SquareBracketClose => score += 57,
+                Symbol::CurlyBracketClose => score += 1197,
+                Symbol::AngleBracketClose => score += 25137,
+                _ => {}
+            },
             _ => {}
         }
     }
@@ -40,8 +38,7 @@ mod tests {
                 ParsedLine::Corrupted(Symbol::RoundBracketClose),
                 ParsedLine::Corrupted(Symbol::AngleBracketClose),
                 ParsedLine::Incomplete,
-
-            ]
+            ],
         };
 
         assert_eq!(syntax_error_score(&input), 26397);
