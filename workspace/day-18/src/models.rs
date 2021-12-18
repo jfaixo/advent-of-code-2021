@@ -30,6 +30,25 @@ impl SnailfishMathProblem {
     pub fn solve_part_1(&self) -> i32 {
         magnitude(&self.sum())
     }
+
+    pub fn solve_part_2(&self) -> i32 {
+        let mut max_magnitude = 0;
+
+        for i in 0..self.values.len() {
+            for j in 0..self.values.len() {
+                if i != j {
+                    let mut n = self.values[i].clone() + self.values[j].clone();
+                    n.reduce();
+                    let magnitude = magnitude(&n);
+                    if magnitude > max_magnitude {
+                        max_magnitude = magnitude;
+                    }
+                }
+            }
+        }
+
+        max_magnitude
+    }
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -69,73 +88,70 @@ impl SnailfishNumber {
         while queue.len() > 0 {
             let (current_node, current_depth) = queue.pop().unwrap();
 
-            match *current_node {
-                SnailfishNumber::Literal { value } => {
-                    if explosion.is_some() {
-                        let (left_value, right_value) = explosion.unwrap();
-                        match last_literal {
-                            None => {}
-                            Some(last_literal) => {
-                                match *last_literal {
-                                    SnailfishNumber::Literal { value } => { *value += left_value; }
-                                    _ => {}
+            if current_depth != 4 || explosion.is_some() {
+                match *current_node {
+                    SnailfishNumber::Literal { value } => {
+                        if explosion.is_some() {
+                            let (left_value, right_value) = explosion.unwrap();
+                            match last_literal {
+                                None => {}
+                                Some(last_literal) => {
+                                    match *last_literal {
+                                        SnailfishNumber::Literal { value } => { *value += left_value; }
+                                        _ => {}
+                                    }
                                 }
                             }
+                            *value += right_value;
+                            return true;
                         }
-                        *value += right_value;
-                        return true;
-                    } else {
-                        last_literal = Some(current_node);
+                        else {
+                            last_literal = Some(current_node);
+                        }
                     }
-                }
-                SnailfishNumber::Pair { left, right } => {
-                    if current_depth == 3 && explosion.is_none() {
-                        // If this is a pair, start an explosion
-                        match &**left {
-                            SnailfishNumber::Pair { left: left_literal, right: right_literal } => {
-                                // Extract literal values
-                                let left_value = match *left_literal.clone() {
-                                    SnailfishNumber::Literal { value } => value,
-                                    _ => panic!()
-                                };
-                                let right_value = match *right_literal.clone() {
-                                    SnailfishNumber::Literal { value } => value,
-                                    _ => panic!()
-                                };
-
-                                explosion = Some((left_value, right_value));
-
-                                *left = Box::from(SnailfishNumber::Literal { value: 0 });
-                                queue.push((Box::new(right), current_depth + 1));
-                            }
-                            _ => {
-                                last_literal = Some(Box::new(left));
-                                // If this is a pair, start an explosion
-                                match &**right {
-                                    SnailfishNumber::Pair { left: left_literal, right: right_literal } => {
-                                        let left_value = match *left_literal.clone() {
-                                            SnailfishNumber::Literal { value } => value,
-                                            _ => panic!()
-                                        };
-                                        let right_value = match *right_literal.clone() {
-                                            SnailfishNumber::Literal { value } => value,
-                                            _ => panic!()
-                                        };
-                                        explosion = Some((left_value, right_value));
-                                        *right = Box::from(SnailfishNumber::Literal { value: 0 });
-                                    }
-                                    _ => {
-                                        last_literal = Some(Box::new(right));
-                                    }
-                                }
-                            }
-                        }
-                    } else {
+                    SnailfishNumber::Pair { left, right } => {
                         queue.push((Box::new(right), current_depth + 1));
                         queue.push((Box::new(left), current_depth + 1));
                     }
                 }
             }
+            else {
+                match *current_node {
+                    SnailfishNumber::Literal { value } => {
+                        if explosion.is_some() {
+                            let (left_value, right_value) = explosion.unwrap();
+                            match last_literal {
+                                None => {}
+                                Some(last_literal) => {
+                                    match *last_literal {
+                                        SnailfishNumber::Literal { value } => { *value += left_value; }
+                                        _ => {}
+                                    }
+                                }
+                            }
+                            *value += right_value;
+                            return true;
+                        } else {
+                            last_literal = Some(current_node);
+                        }
+                    }
+                    SnailfishNumber::Pair { left, right } => {
+                        // Extract literal values
+                        let left_value = match *left.clone() {
+                            SnailfishNumber::Literal { value } => value,
+                            _ => panic!()
+                        };
+                        let right_value = match *right.clone() {
+                            SnailfishNumber::Literal { value } => value,
+                            _ => panic!()
+                        };
+
+                        explosion = Some((left_value, right_value));
+                        **current_node = SnailfishNumber::Literal { value: 0 };
+                    }
+                }
+            }
+
         }
 
         match explosion {
@@ -169,9 +185,10 @@ impl SnailfishNumber {
             match *current_node {
                 SnailfishNumber::Literal { value } => {
                     if *value > 9 {
+                        let half_value = *value as f32 / 2.0;
                         **current_node = SnailfishNumber::Pair {
-                            left: Box::new(SnailfishNumber::Literal { value: *value / 2 }),
-                            right: Box::new(SnailfishNumber::Literal { value: *value / 2 + 1 }),
+                            left: Box::new(SnailfishNumber::Literal { value: half_value.trunc() as i32 }),
+                            right: Box::new(SnailfishNumber::Literal { value: half_value.round() as i32 }),
                         };
                         return true;
                     }
@@ -192,7 +209,9 @@ impl SnailfishNumber {
             while self.explode() {
                 exploded_or_splitted = true;
             }
-            exploded_or_splitted |= self.split();
+            if self.split() {
+                exploded_or_splitted = true;
+            }
 
             if !exploded_or_splitted {
                 break;
@@ -428,13 +447,6 @@ mod tests {
     }
 
     #[test]
-    fn explode_5() {
-        let mut n = SnailfishNumber::parse_str("[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]", 0).0;
-        n.explode();
-        print_debug(&n);
-    }
-
-    #[test]
     fn split_1() {
         let mut n = SnailfishNumber::Pair {
             left: Box::new(SnailfishNumber::Literal { value: 15 }),
@@ -509,7 +521,7 @@ mod tests {
             ]
         };
 
-        print_debug(&problem.sum());
+        assert_eq!(problem.sum(), SnailfishNumber::parse_str("[[[[5,0],[7,4]],[5,5]],[6,6]]", 0).0);
     }
 
     #[test]
@@ -520,7 +532,7 @@ mod tests {
         let mut n = n1 + n2;
         n.reduce();
 
-        print_debug(&n);
+        assert_eq!(n, SnailfishNumber::parse_str("[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]", 0).0);
     }
 
     #[test]
@@ -540,9 +552,7 @@ mod tests {
             ]
         };
 
-        print_debug(&problem.sum());
-
-        assert_eq!(problem.solve_part_1(), 4140);
+        assert_eq!(problem.sum(), SnailfishNumber::parse_str("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]", 0).0);
     }
 
     #[test]

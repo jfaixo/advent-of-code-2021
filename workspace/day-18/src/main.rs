@@ -16,8 +16,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         fs::read_to_string(args[1].clone()).expect("Error while reading the data file");
     let input = SnailfishMathProblem::parse_string(file_content);
 
-    // println!("part 1: {}", input.find_highest_hit());
-    // println!("part 2: {}", input.count_viable_initial_velocity());
+    println!("part 1: {}", input.solve_part_1());
+    println!("part 2: {}", input.solve_part_2());
 
     Ok(())
 }
